@@ -1,8 +1,12 @@
-import AuthForm from '@/components/AuthForm'
-import React from 'react'
+import React, { Suspense } from "react";
+import AuthForm from "@/components/AuthForm";
 
 const Page = () => {
-  return <AuthForm type="sign-up"/>
-}
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AuthForm type="sign-up" />
+    </Suspense>
+  );
+};
 
-export default Page
+export default Page;
