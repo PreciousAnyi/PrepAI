@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`dark ${sora.variable} ${redHat.variable}`}>
-      <body className="antialiased pattern">
+      <body >
         {children}
       </body>
     </html>

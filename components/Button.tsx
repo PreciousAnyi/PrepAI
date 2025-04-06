@@ -9,6 +9,7 @@ interface ButtonProps {
   width?: string;
   height?: string;
   fill?: boolean;
+  type?: "button" | "submit" | "reset",
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -19,9 +20,11 @@ const Button: React.FC<ButtonProps> = ({
   width,
   height,
   fill,
+  type = "submit",
 }) => {
   return (
     <button
+    type={type}
       className={`${
         fill
           ? "bg-[#808080] text-text-secondary"

@@ -20,6 +20,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [profilePicture, setProfilePicture] = useState<File | null>(null);
 
   React.useEffect(() => {
     const success = searchParams.get("success");
@@ -124,22 +125,46 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           <PasswordInput value={password} onChange={handlePasswordChange} />
           {type === "sign-up" && (
             <>
-              <label
-                htmlFor="profile-picture"
-                className="text-body text-base font-medium font-redhat block"
-              >
-                Profile Picture
-              </label>
-              <Button
-                text={
-                  <div className="flex gap-3 font-redhat font-normal text-text-secondary text-[16px]">
-                    <Upload />
-                    <p>Upload your picture</p>
-                  </div>
-                }
-                fill={false}
-                disabled={isButtonDisabled}
-              />
+              <div className="space-y-2">
+                <input
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  id="profile-picture"
+                  className="hidden"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setProfilePicture(file);
+                      console.log("Selected file:", file);
+                    }
+                  }}
+                />
+                <button
+                  type="button"
+                  onClick={() => {
+                    document.getElementById("profile-picture")?.click();
+                  }}
+                  className="w-full"
+                >
+                  <Button
+                    type="button"
+                    text={
+                      profilePicture ? (
+                        <div className="flex gap-3 items-center font-redhat font-normal text-text-secondary text-[16px]">
+                          ✅<p>{profilePicture.name}</p>
+                        </div>
+                      ) : (
+                        <div className="flex gap-3 items-center font-redhat font-normal text-text-secondary text-[16px]">
+                          <Upload />
+                          <p>Upload your picture</p>
+                        </div>
+                      )
+                    }
+                    fill={false}
+                    disabled={isButtonDisabled}
+                  />
+                </button>
+              </div>
             </>
           )}
           <Button
@@ -156,7 +181,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
               onClick={() => {
                 if (type === "sign-up") {
                   router.push("/sign-in");
-                } else router.push('/sign-up')
+                } else router.push("/sign-up");
               }}
               className="pl-2 text-[#B3B3B3] font-redhat font-bold cursor-pointer"
             >

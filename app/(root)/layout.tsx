@@ -3,8 +3,8 @@ import React, { ReactNode } from "react";
 
 const RootLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div>
-      <div className="flex items-center justify-between px-[100px] pt-[32px]">
+    <div className="">
+      <div className="sticky top-0 z-50 bg-background flex items-center justify-between px-[100px] pt-[32px]">
         <h4 className="font-sora text-[32px] font-bold">PrepAI</h4>
         <Image
           src="/profile.png"

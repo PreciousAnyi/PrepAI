@@ -4,7 +4,7 @@ import React from "react";
 const Homepage = () => {
   return (
     <div className="px-[100px]">
-      <div className="flex justify-between pl-[69px] pr-[80px] h-[299px] rounded-[16px] bg-[#121212]">
+      <div className="flex justify-between pl-[69px] pr-[80px] h-[299px] rounded-[16px] bg-[#1A1A1A]">
         <div className="w-[515px] pt-[70px]">
           <h2 className="font-sora text-[32px] font-bold text-[#ffffff]">
             Get Interview-Ready with AI- Powered Practice & Feedback
@@ -20,7 +20,7 @@ const Homepage = () => {
       <h2 className="font-sora text-[32px] font-bold text-[#ffffff] pt-[102px] pb-[20px]">
         Your Interviews
       </h2>
-      <div className="h-[254px] rounded-[16px] bg-[#121212] "></div>
+      <div className="h-[254px] rounded-[16px] bg-surface-card "></div>
 
       <h2 className="font-sora text-[32px] font-bold text-[#ffffff] pt-[100px] pb-[44px]">
         Pick An Interview
