@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`dark ${sora.variable} ${redHat.variable}`}>
-      <body >
+      <body className="pb-[32px]">
         {children}
       </body>
     </html>
