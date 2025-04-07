@@ -29,8 +29,8 @@ const InterviewCard = () => {
           experiences through methodical testing practices.
         </div>
         <div className="h-[26px]"></div>
-      </div>
         <InterviewBtn text="Start Interview" />
+      </div>
     </div>
   );
 };

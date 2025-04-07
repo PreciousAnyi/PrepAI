@@ -2,6 +2,7 @@
 
 import CreateInterviewModal from "@/components/CreateInterviewModal";
 import InterviewBtn from "@/components/InterviewBtn";
+import InterviewCard from "@/components/InterviewCard";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -49,6 +50,16 @@ const Homepage = () => {
       <h2 className="font-sora text-[32px] font-bold text-[#ffffff] pt-[100px] pb-[44px]">
         Pick An Interview
       </h2>
+      <div className="grid grid-cols-3 gap-5">
+
+      <InterviewCard />
+      <InterviewCard />
+      <InterviewCard />
+      <InterviewCard />
+      <InterviewCard />
+      <InterviewCard />
+      </div>
+
       {isModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <CreateInterviewModal
