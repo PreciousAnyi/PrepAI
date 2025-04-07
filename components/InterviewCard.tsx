@@ -12,7 +12,7 @@ const InterviewCard = () => {
       </div>
 
       <div className="px-[39px]">
-        <Image src={"/icon.png"} alt="brand-logo" width={80} height={80} />
+        <Image src={"/brand.png"} alt="brand-logo" width={80} height={80} />
         <h2 className="py-[16px] font-sora font-semibold text-[28px] text-[#ffffff]">
           QA Engineer
         </h2>
