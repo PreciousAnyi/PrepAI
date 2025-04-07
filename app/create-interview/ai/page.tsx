@@ -1,8 +1,10 @@
 "use client";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import React from "react";
 
-const page = () => {
+const Page = () => {
+  const router = useRouter()
   return (
     <div className="px-[100px] pt-[72px]">
       <h2 className="font-sora text-[32px] font-bold text-[#ffffff]">PrepAI</h2>
@@ -32,8 +34,8 @@ const page = () => {
       </div>
 
       {/* Caption */}
-      <div className="flex px-[199px] font-redhat font-normal text-[24px] text-[#D6E0FF] justify-center items-center w-full h-[80px] bg-surface-card border-[#303030] rounded-2xl">
-        The caption is what would be displayed here as the interview progress.
+      <div className="flex line-clamp-2 px-[12px] md:px-[199px] font-redhat font-normal text-[16px] md:text-[24px] text-[#D6E0FF] justify-center items-center w-full h-[80px] bg-surface-card border-[#303030] rounded-2xl">
+        The caption is what would be displayed here as the interview progresses.
         Success!
       </div>
 
@@ -41,7 +43,7 @@ const page = () => {
       <div className="flex w-full justify-center pt-[32px]">
         <button
           type="button"
-          onClick={() => {}}
+          onClick={() => {router.push('/')}}
           className="flex text-[#D6E0FF] cursor-pointer font-medium font-redhat text-[20px] items-center justify-center w-[190px] h-[67px] rounded-[100px] bg-[#EB5757]"
         >
           Leave Interview
@@ -51,4 +53,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
