@@ -19,6 +19,7 @@ const Page = () => {
             alt="bot-head"
             width={150}
             height={150}
+            className="rounded-full object-cover"
           />
         </div>
 
@@ -28,7 +29,7 @@ const Page = () => {
             alt="bot-head"
             width={150}
             height={150}
-            className="rounded-full"
+            className="rounded-full object-cover"
           />
         </div>
       </div>

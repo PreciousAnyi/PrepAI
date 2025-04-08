@@ -35,33 +35,23 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
     }
   }, [searchParams, type]);
 
-  const checkInputs = (): void => {
+  React.useEffect(() => {
     if (type === "sign-up") {
       setIsButtonDisabled(!(name && email && password && profilePicture));
     } else if (type === "sign-in") {
       setIsButtonDisabled(!(email && password));
     }
-  };
+  }, [name, email, password, profilePicture, type]);
 
-  const handleNameChange = (value: string): void => {
-    setName(value);
-    checkInputs();
-  };
-
-  const handleEmailChange = (value: string): void => {
-    setEmail(value);
-    checkInputs();
-  };
-
-  const handlePasswordChange = (value: string): void => {
-    setPassword(value);
-    checkInputs();
-  };
-  const handleProfilePictureChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = (value: string): void => setName(value);
+  const handleEmailChange = (value: string): void => setEmail(value);
+  const handlePasswordChange = (value: string): void => setPassword(value);
+  const handleProfilePictureChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (file) {
       setProfilePicture(file);
-      checkInputs(); // Call checkInputs after updating the profile picture
       console.log("Selected file:", file);
     }
   };
@@ -69,33 +59,34 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!isButtonDisabled) {
-
       try {
         if (type === "sign-up") {
-          
           let profileImageUrl = "";
-          
+
           // 🔼 Upload profile picture if available
           if (profilePicture) {
             const formData = new FormData();
             formData.append("file", profilePicture);
-            formData.append("upload_preset", process.env.CLOUDINARY_UPLOAD_PRESET!);
-            
+            formData.append(
+              "upload_preset",
+              process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!
+            );
+
             const res = await fetch(
-              `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
+              `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
               {
                 method: "POST",
                 body: formData,
               }
             );
-            
+
             if (!res.ok) {
               const errorData = await res.json();
               console.error("Cloudinary upload error:", errorData);
               setError("Failed to upload image. Please try again.");
               return;
             }
-            
+
             const data = await res.json();
             console.log("Cloudinary response:", data); // Check the response
             profileImageUrl = data.secure_url;
@@ -142,7 +133,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
       } catch (error: any) {
         if (error.code === "auth/email-already-in-use") {
           setError("This email is already in use. Please log in.");
-        } else if(error.code === "auth/invalid-credential") {
+        } else if (error.code === "auth/invalid-credential") {
           setError("Invalid Credentials");
         } else {
           setError(error.message || "Something went wrong.");
@@ -226,7 +217,6 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                       )
                     }
                     fill={false}
-                    
                   />
                 </button>
               </div>

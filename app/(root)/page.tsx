@@ -29,10 +29,18 @@ const Homepage = () => {
           <p className="font-redhat text-[#D6E0FF] text-[18px] pt-3 pb-[24px]">
             Practice real interview questions & get instant feedback.
           </p>
-          <InterviewBtn text="Create an Interview" onClick={() => setIsModalOpen(true)}/>
+          <InterviewBtn
+            text="Create an Interview"
+            onClick={() => setIsModalOpen(true)}
+          />
         </div>
 
-        <Image src={"/bot.png"} alt="robot" width={290} height={290} />
+        <Image
+          src={"/bot.png"}
+          alt="robot"
+          width={290}
+          height={290}
+        />
       </div>
 
       {/* Interview Card */}
@@ -44,20 +52,22 @@ const Homepage = () => {
           {" "}
           Interviews you create will show up here.{" "}
         </h4>
-        <InterviewBtn text="Create an Interview" onClick={() => setIsModalOpen(true)}/>
+        <InterviewBtn
+          text="Create an Interview"
+          onClick={() => setIsModalOpen(true)}
+        />
       </div>
 
       <h2 className="font-sora text-[32px] font-bold text-[#ffffff] pt-[100px] pb-[44px]">
         Pick An Interview
       </h2>
       <div className="grid grid-cols-3 gap-5">
-
-      <InterviewCard />
-      <InterviewCard />
-      <InterviewCard />
-      <InterviewCard />
-      <InterviewCard />
-      <InterviewCard />
+        <InterviewCard />
+        <InterviewCard />
+        <InterviewCard />
+        <InterviewCard />
+        <InterviewCard />
+        <InterviewCard />
       </div>
 
       {isModalOpen && (
