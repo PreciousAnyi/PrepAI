@@ -27,7 +27,6 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   const [error, setError] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
-  const [isUploadButtonDisabled, setIsUploadButtonDisabled] = useState<boolean>(false);
 
   React.useEffect(() => {
     const success = searchParams.get("success");
@@ -70,9 +69,6 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!isButtonDisabled) {
-      // const nameParts = name.trim().split(" ");
-      // const firstName = nameParts[0];
-      // const lastName = nameParts.length > 1 ? nameParts.slice(1).join(" ") : "";
 
       try {
         if (type === "sign-up") {
@@ -83,10 +79,10 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           if (profilePicture) {
             const formData = new FormData();
             formData.append("file", profilePicture);
-            formData.append("upload_preset", process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!);
+            formData.append("upload_preset", process.env.CLOUDINARY_UPLOAD_PRESET!);
             
             const res = await fetch(
-              `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+              `https://api.cloudinary.com/v1_1/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload`,
               {
                 method: "POST",
                 body: formData,
