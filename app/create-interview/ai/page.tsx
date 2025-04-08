@@ -5,6 +5,20 @@ import React from "react";
 
 const Page = () => {
   const router = useRouter()
+
+  enum CallStatus {
+    INACTIVE = "INACTIVE",
+    CONNECTING = "CONNECTING",
+    ACTIVE = "ACTIVE",
+    FINISHED = "FINISHED",
+  }
+  
+  interface SavedMessage {
+    role: "user" | "system" | "assistant";
+    content: string;
+  }
+
+  const isSpeaking = true;
   return (
     <div className="px-[100px] pt-[72px]">
       <h2 className="font-sora text-[32px] font-bold text-[#ffffff]">PrepAI</h2>
@@ -21,6 +35,7 @@ const Page = () => {
             height={150}
             className="rounded-full object-cover"
           />
+          {isSpeaking && <span className="absolute inline-flex w-[100px] h-[100px] animate-ping rounded-full bg-primary-200 opacity-75"></span>}
         </div>
 
         <div className="flex justify-center items-center w-full h-[330px] bg-surface-card border-[#303030] rounded-2xl">
