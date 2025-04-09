@@ -167,7 +167,7 @@ const Agent = ({
 
         <div className="flex justify-center items-center w-full h-[330px] bg-surface-card border-[#303030] rounded-2xl">
           <Image
-            src={"/profile.png"}
+            src={profileImageUrl}
             alt="bot-head"
             width={150}
             height={150}
