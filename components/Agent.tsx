@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
 import { createFeedback } from "@/lib/actions/general.action";
+import { cn } from "@/lib/utils";
 
 const Agent = ({
   userName,
@@ -177,20 +178,25 @@ const Agent = ({
 
       {/* Caption */}
       <div className="flex line-clamp-2 px-[12px] md:px-[199px] font-redhat font-normal text-[16px] md:text-[24px] text-[#D6E0FF] justify-center items-center w-full h-[80px] bg-surface-card border-[#303030] rounded-2xl">
-        The caption is what would be displayed here as the interview progresses.
-        Success!
+      <p
+              key={lastMessage}
+              className={cn(
+                "transition-opacity duration-500 opacity-0",
+                "animate-fadeIn opacity-100"
+              )}
+            >
+              {lastMessage}
+            </p>
       </div>
 
       {/* Leave Interview Button */}
       <div className="flex w-full justify-center pt-[32px]">
         <button
           type="button"
-          onClick={() => {
-            router.push("/");
-          }}
-          className="flex text-[#D6E0FF] cursor-pointer font-medium font-redhat text-[20px] items-center justify-center w-[190px] h-[67px] rounded-[100px] bg-[#EB5757]"
+          onClick={callStatus !== "ACTIVE" ? handleCall : handleDisconnect}
+          className={`flex text-[#D6E0FF] cursor-pointer font-medium font-redhat text-[20px] items-center justify-center w-[190px] h-[67px] rounded-[100px] ${callStatus !== "ACTIVE" ? 'bg-green-500' : 'bg-[#EB5757]'}`}
         >
-          Leave Interview
+         {callStatus !== "ACTIVE" ? "Begin Interview" : "Leave Interview"}
         </button>
       </div>
     </div>
