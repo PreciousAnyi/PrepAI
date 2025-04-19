@@ -2,19 +2,23 @@
 import Image from "next/image";
 import React from "react";
 import InterviewBtn from "./InterviewBtn";
+import { useRouter } from "next/navigation";
+import { getLevelBg, getTypeBg } from "@/lib/utils";
 
 const InterviewCard = ({
   //
   userId,
+  id,
   role,
   type,
   techstack,
   level,
 }: InterviewCardProps) => {
+  const router = useRouter();
   return (
     <div className="flex flex-col w-full h-[448px] bg-surface-card rounded-[20px] overflow-hidden">
       <div className="flex justify-end">
-        <div className="rounded-bl-[20px] w-[118px] h-[42px] bg-[#3A3A3A] flex items-center justify-center text-white">
+        <div className={`rounded-bl-[20px] w-[118px] h-[42px] ${getTypeBg(type)} flex items-center justify-center text-white`}>
           {type}
         </div>
       </div>
@@ -26,7 +30,7 @@ const InterviewCard = ({
         </h2>
 
         <div
-          className={`flex justify-center items-center text-[12px] bg-[#3E8D2E6E] w-[80px] h-[22px] rounded-[4px] font-redhat font-normal`}
+          className={`flex justify-center items-center text-[12px] ${getLevelBg(level ?? 'unknown')} w-[80px] h-[22px] rounded-[4px] font-redhat font-normal`}
         >
           {level}
         </div>
@@ -39,7 +43,9 @@ The candidate will be assessed across the following tech stacks: ${techstack.joi
           )}.`}
         </div>
         <div className="h-[26px]"></div>
-        <InterviewBtn text="Start Interview" />
+        <InterviewBtn text="Start Interview" onClick={() => {
+          router.push(`/create-interview/${id}`)
+        }} />
       </div>
     </div>
   );

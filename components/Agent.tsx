@@ -6,16 +6,19 @@ import React, { useEffect, useState } from "react";
 import { vapi } from "@/lib/vapi.sdk";
 import { interviewer } from "@/constants";
 import { createFeedback } from "@/lib/actions/general.action";
-import { cn } from "@/lib/utils";
+import { cn, getLevelBg, getTypeBg } from "@/lib/utils";
 
 const Agent = ({
   userName,
   userId,
   interviewId,
+  interviewType,
+  interviewLevel,
+  interviewRole,
   feedbackId,
   type,
   questions,
-  profileImageUrl
+  profileImageUrl,
 }: AgentProps) => {
   enum CallStatus {
     INACTIVE = "INACTIVE",
@@ -92,7 +95,8 @@ const Agent = ({
       });
 
       if (success && id) {
-        router.push(`/interview/${interviewId}/feedback`);
+        router.push(`/create-interview/${interviewId}/feedback`);
+        console.log("success")
       } else {
         console.log("Error saving feedback");
         router.push("/");
@@ -146,9 +150,45 @@ const Agent = ({
 
   return (
     <div className="px-[100px] pt-[72px]">
-      <h2 className="font-sora text-[32px] font-bold text-[#ffffff]">PrepAI</h2>
+      <h2
+        className="font-sora text-[32px] font-bold text-[#ffffff] cursor-pointer"
+        onClick={() => router.push("/")}
+      >
+        PrepAI
+      </h2>
       <h2 className="font-sora text-[32px] font-bold text-[#ffffff] pt-[59px] pb-[41px]">
-        Create an Interview
+        {type === "generate" ? (
+          "Create an Interview"
+        ) : (
+          <div className="flex justify-between font-sora text-[32px] font-bold text-[#ffffff]">
+            <div className="flex gap-[10px] items-center">
+              <Image
+                src={profileImageUrl}
+                alt="profile"
+                width={40}
+                height={40}
+                className="rounded-full object-cover"
+              />
+
+              {interviewRole} 
+              <h3 className="font-sora text-[32px] font-bold text-[#ffffff]">Interview</h3>
+              <div
+                className={`flex justify-center items-center text-[12px] ${getLevelBg(
+                  interviewLevel ?? "unknown"
+                )} w-[80px] h-[22px] rounded-[4px] font-redhat font-normal`}
+              >
+                {interviewLevel}
+              </div>
+            </div>
+            <div
+              className={`rounded-bl-[20px] ${getTypeBg(
+                interviewType ?? ""
+              )} flex items-center justify-center font-redhat font-medium text-[16px] w-[118px] rounded-tr-[20px]`}
+            >
+              {interviewType}
+            </div>
+          </div>
+        )}
       </h2>
 
       <div className="flex gap-5 pb-[32px]">
@@ -168,7 +208,7 @@ const Agent = ({
         <div className="flex justify-center items-center w-full h-[330px] bg-surface-card border-[#303030] rounded-2xl">
           <Image
             src={profileImageUrl}
-            alt="bot-head"
+            alt="profile"
             width={150}
             height={150}
             className="rounded-full object-cover"
@@ -178,15 +218,15 @@ const Agent = ({
 
       {/* Caption */}
       <div className="flex line-clamp-2 px-[12px] md:px-[199px] font-redhat font-normal text-[16px] md:text-[24px] text-[#D6E0FF] justify-center items-center w-full h-[80px] bg-surface-card border-[#303030] rounded-2xl">
-      <p
-              key={lastMessage}
-              className={cn(
-                "transition-opacity duration-500 opacity-0",
-                "animate-fadeIn opacity-100"
-              )}
-            >
-              {lastMessage}
-            </p>
+        <p
+          key={lastMessage}
+          className={cn(
+            "transition-opacity duration-500 opacity-0",
+            "animate-fadeIn opacity-100"
+          )}
+        >
+          {lastMessage}
+        </p>
       </div>
 
       {/* Leave Interview Button */}
@@ -194,9 +234,11 @@ const Agent = ({
         <button
           type="button"
           onClick={callStatus !== "ACTIVE" ? handleCall : handleDisconnect}
-          className={`flex text-[#D6E0FF] cursor-pointer font-medium font-redhat text-[20px] items-center justify-center w-[190px] h-[67px] rounded-[100px] ${callStatus !== "ACTIVE" ? 'bg-green-500' : 'bg-[#EB5757]'}`}
+          className={`flex text-[#D6E0FF] cursor-pointer font-medium font-redhat text-[20px] items-center justify-center w-[190px] h-[67px] rounded-[100px] ${
+            callStatus !== "ACTIVE" ? "bg-green-500" : "bg-[#EB5757]"
+          }`}
         >
-         {callStatus !== "ACTIVE" ? "Begin Interview" : "Leave Interview"}
+          {callStatus !== "ACTIVE" ? "Begin Interview" : "Leave Interview"}
         </button>
       </div>
     </div>

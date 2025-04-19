@@ -1,4 +1,4 @@
-import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
+ import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
 import { z } from "zod";
 export {};
 // export const mappings = {

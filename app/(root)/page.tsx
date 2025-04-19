@@ -70,6 +70,7 @@ const Homepage = () => {
           {userInterviews?.map((interview) => (
             <InterviewCard
               key={interview.id}
+              id={interview.id}
               userId={user?.id ?? ""}
               level={interview.level}
               role={interview.role}

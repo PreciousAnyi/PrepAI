@@ -40,7 +40,7 @@ interface User {
 }
 
 interface InterviewCardProps {
-  interviewId?: string;
+  id?: string;
   userId?: string;
   role: string;
   type: string;
@@ -57,6 +57,10 @@ interface AgentProps {
   type: "generate" | "interview";
   questions?: string[];
   profileImageUrl: string;
+  interviewLevel?: string;
+  interviewType?: string;
+  interviewRole?: string;
+
 }
 
 interface RouteParams {
