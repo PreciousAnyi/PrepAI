@@ -25,7 +25,7 @@ const page = async ({ params }: RouteParams) => {
         interviewLevel={interview.level}
         interviewRole={interview.role}
         questions={interview.questions}
-        interviewId={interview.id}
+        interviewId={id}
         profileImageUrl={user?.profileImageUrl ?? "/profile.png"}
         type="interview"
       />

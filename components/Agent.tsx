@@ -87,8 +87,14 @@ const Agent = ({
     const handleGenerateFeedback = async (messages: SavedMessage[]) => {
       console.log("handleGenerateFeedback");
 
+      // Check if interviewId is defined before proceeding
+      if (!interviewId) {
+        console.error("interviewId is required.");
+        return; // Early return if interviewId is not available
+      }
+
       const { success, feedbackId: id } = await createFeedback({
-        interviewId: interviewId!,
+        interviewId: interviewId,
         userId: userId!,
         transcript: messages,
         feedbackId,
@@ -96,7 +102,7 @@ const Agent = ({
 
       if (success && id) {
         router.push(`/create-interview/${interviewId}/feedback`);
-        console.log("success")
+        console.log("success");
       } else {
         console.log("Error saving feedback");
         router.push("/");
