@@ -3,16 +3,21 @@ import React, { ReactNode, MouseEvent } from "react";
 interface InterviewBtnProps {
   text: string | ReactNode;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
+  loading?: boolean;
 }
 
-const InterviewBtn: React.FC<InterviewBtnProps> = ({ text, onClick }) => {
+const InterviewBtn: React.FC<InterviewBtnProps> = ({ text, onClick, loading }) => {
   return (
     <button
       type="button"
-      onClick={onClick}
-      className="flex text-text-primary text-[16px] cursor-pointer font-medium font-redhat items-center justify-center w-[190px] h-[40px] rounded-[56px] bg-[#4A154B]"
+      onClick={!loading ? onClick : undefined}
+      disabled={loading}
+      className={`flex items-center justify-center font-redhat text-[14px] sm:text-[16px] font-medium rounded-[56px] bg-[#4A154B] text-text-primary
+        h-[40px] w-[150px] sm:w-[190px] cursor-pointer transition-opacity duration-300
+        ${loading ? "opacity-50 cursor-not-allowed" : "hover:opacity-80"}
+      `}
     >
-      {text}
+      {loading ? "Loading..." : text}
     </button>
   );
 };

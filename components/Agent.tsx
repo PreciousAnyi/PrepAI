@@ -1,5 +1,5 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -26,6 +26,7 @@ const Agent = ({
     ACTIVE = "ACTIVE",
     FINISHED = "FINISHED",
   }
+
   const router = useRouter();
   const [callStatus, setCallStatus] = useState<CallStatus>(CallStatus.INACTIVE);
   const [messages, setMessages] = useState<SavedMessage[]>([]);
@@ -33,34 +34,19 @@ const Agent = ({
   const [lastMessage, setLastMessage] = useState<string>("");
 
   useEffect(() => {
-    const onCallStart = () => {
-      setCallStatus(CallStatus.ACTIVE);
-    };
-
-    const onCallEnd = () => {
-      setCallStatus(CallStatus.FINISHED);
-    };
-
+    const onCallStart = () => setCallStatus(CallStatus.ACTIVE);
+    const onCallEnd = () => setCallStatus(CallStatus.FINISHED);
     const onMessage = (message: Message) => {
       if (message.type === "transcript" && message.transcriptType === "final") {
-        const newMessage = { role: message.role, content: message.transcript };
-        setMessages((prev) => [...prev, newMessage]);
+        setMessages((prev) => [
+          ...prev,
+          { role: message.role, content: message.transcript },
+        ]);
       }
     };
-
-    const onSpeechStart = () => {
-      console.log("speech start");
-      setIsSpeaking(true);
-    };
-
-    const onSpeechEnd = () => {
-      console.log("speech end");
-      setIsSpeaking(false);
-    };
-
-    const onError = (error: Error) => {
-      console.log("Error:", error);
-    };
+    const onSpeechStart = () => setIsSpeaking(true);
+    const onSpeechEnd = () => setIsSpeaking(false);
+    const onError = (error: Error) => console.log("Error:", error);
 
     vapi.on("call-start", onCallStart);
     vapi.on("call-end", onCallEnd);
@@ -80,66 +66,39 @@ const Agent = ({
   }, []);
 
   useEffect(() => {
-    if (messages.length > 0) {
+    if (messages.length > 0)
       setLastMessage(messages[messages.length - 1].content);
-    }
 
-    const handleGenerateFeedback = async (messages: SavedMessage[]) => {
-      console.log("handleGenerateFeedback");
-
-      // Check if interviewId is defined before proceeding
-      if (!interviewId) {
-        console.error("interviewId is required.");
-        return; // Early return if interviewId is not available
-      }
-
+    const handleGenerateFeedback = async () => {
+      if (!interviewId) return console.error("interviewId is required.");
       const { success, feedbackId: id } = await createFeedback({
-        interviewId: interviewId,
+        interviewId,
         userId: userId!,
         transcript: messages,
         feedbackId,
       });
 
-      if (success && id) {
-        router.push(`/create-interview/${interviewId}/feedback`);
-        console.log("success");
-      } else {
-        console.log("Error saving feedback");
-        router.push("/");
-      }
+      router.push(
+        success && id ? `/create-interview/${interviewId}/feedback` : "/"
+      );
     };
 
     if (callStatus === CallStatus.FINISHED) {
-      if (type === "generate") {
-        router.push("/");
-      } else {
-        handleGenerateFeedback(messages);
-      }
+      type === "generate" ? router.push("/") : handleGenerateFeedback();
     }
   }, [messages, callStatus, feedbackId, interviewId, router, type, userId]);
 
   const handleCall = async () => {
     setCallStatus(CallStatus.CONNECTING);
-
     if (type === "generate") {
       await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
-        variableValues: {
-          username: userName,
-          userid: userId,
-        },
+        variableValues: { username: userName, userid: userId },
       });
     } else {
-      let formattedQuestions = "";
-      if (questions) {
-        formattedQuestions = questions
-          .map((question) => `- ${question}`)
-          .join("\n");
-      }
-
+      const formattedQuestions =
+        questions?.map((q) => `- ${q}`).join("\n") || "";
       await vapi.start(interviewer, {
-        variableValues: {
-          questions: formattedQuestions,
-        },
+        variableValues: { questions: formattedQuestions },
       });
     }
   };
@@ -155,41 +114,43 @@ const Agent = ({
   }
 
   return (
-    <div className="px-[100px] pt-[72px]">
+    <div className="px-4 sm:px-10 md:px-16 lg:px-24 xl:px-[100px] pt-16 md:pt-[72px]">
       <h2
-        className="font-sora text-[32px] font-bold text-[#ffffff] cursor-pointer"
+        className="text-2xl md:text-3xl font-sora font-bold text-white cursor-pointer"
         onClick={() => router.push("/")}
       >
         PrepAI
       </h2>
-      <h2 className="font-sora text-[32px] font-bold text-[#ffffff] pt-[59px] pb-[41px]">
+
+      <h2 className="font-sora text-2xl md:text-3xl font-bold text-white pt-10 pb-10">
         {type === "generate" ? (
           "Create an Interview"
         ) : (
-          <div className="flex justify-between font-sora text-[32px] font-bold text-[#ffffff]">
-            <div className="flex gap-[10px] items-center">
+          <div className="flex flex-col md:flex-row justify-between gap-4">
+            <div className="flex items-center gap-3 flex-wrap">
               <Image
                 src={profileImageUrl}
                 alt="profile"
                 width={40}
                 height={40}
-                className="rounded-full object-cover"
+                className="rounded-full object-cover hidden md:block"
               />
-
-              {interviewRole} 
-              <h3 className="font-sora text-[32px] font-bold text-[#ffffff]">Interview</h3>
+              <span>{interviewRole}</span>
+              <h3 className="font-sora text-xl md:text-2xl font-bold text-white">
+                Interview
+              </h3>
               <div
-                className={`flex justify-center items-center text-[12px] ${getLevelBg(
+                className={`text-xs ${getLevelBg(
                   interviewLevel ?? "unknown"
-                )} w-[80px] h-[22px] rounded-[4px] font-redhat font-normal`}
+                )} w-fit h-6 rounded font-redhat px-3 py-1 flex items-center justify-center hidden sm:block`}
               >
                 {interviewLevel}
               </div>
             </div>
             <div
-              className={`rounded-bl-[20px] ${getTypeBg(
+              className={`rounded-bl-2xl ${getTypeBg(
                 interviewType ?? ""
-              )} flex items-center justify-center font-redhat font-medium text-[16px] w-[118px] rounded-tr-[20px]`}
+              )} flex items-center justify-center font-redhat font-medium text-base w-[118px] rounded-tr-2xl`}
             >
               {interviewType}
             </div>
@@ -197,21 +158,23 @@ const Agent = ({
         )}
       </h2>
 
-      <div className="flex gap-5 pb-[32px]">
-        <div className="flex justify-center items-center w-full h-[330px] bg-surface-card border-[#303030] rounded-2xl">
+      <div className="flex flex-col md:flex-row gap-5 pb-8">
+        {/* AI card - always shown */}
+        <div className="flex justify-center items-center w-full h-[330px] bg-surface-card border border-[#303030] rounded-2xl relative">
           <Image
-            src={"/bot-head.png"}
+            src="/bot-head.png"
             alt="bot-head"
             width={150}
             height={150}
-            className="rounded-full object-cover"
+            className="rounded-full object-fit"
           />
           {isSpeaking && (
-            <span className="absolute inline-flex w-[100px] h-[100px] animate-ping rounded-full bg-primary-200 opacity-75"></span>
+            <span className="absolute inline-flex w-24 h-24 animate-ping rounded-full bg-primary-200 opacity-75"></span>
           )}
         </div>
 
-        <div className="flex justify-center items-center w-full h-[330px] bg-surface-card border-[#303030] rounded-2xl">
+        {/* User profile card - hidden on mobile */}
+        <div className="hidden md:flex justify-center items-center w-full h-[330px] bg-surface-card border border-[#303030] rounded-2xl relative">
           <Image
             src={profileImageUrl}
             alt="profile"
@@ -222,8 +185,7 @@ const Agent = ({
         </div>
       </div>
 
-      {/* Caption */}
-      <div className="flex line-clamp-2 px-[12px] md:px-[199px] font-redhat font-normal text-[16px] md:text-[24px] text-[#D6E0FF] justify-center items-center w-full h-[80px] bg-surface-card border-[#303030] rounded-2xl">
+      <div className="flex px-3 md:px-10 lg:px-48 font-redhat font-normal text-base md:text-xl text-[#D6E0FF] justify-center items-center w-full h-20 bg-surface-card border border-[#303030] rounded-2xl">
         <p
           key={lastMessage}
           className={cn(
@@ -235,12 +197,11 @@ const Agent = ({
         </p>
       </div>
 
-      {/* Leave Interview Button */}
-      <div className="flex w-full justify-center pt-[32px]">
+      <div className="flex w-full justify-center pt-8">
         <button
           type="button"
           onClick={callStatus !== "ACTIVE" ? handleCall : handleDisconnect}
-          className={`flex text-[#D6E0FF] cursor-pointer font-medium font-redhat text-[20px] items-center justify-center w-[190px] h-[67px] rounded-[100px] ${
+          className={`text-white font-medium text-lg px-8 py-4 rounded-full ${
             callStatus !== "ACTIVE" ? "bg-green-500" : "bg-[#EB5757]"
           }`}
         >

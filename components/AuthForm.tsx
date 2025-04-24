@@ -63,7 +63,6 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         if (type === "sign-up") {
           let profileImageUrl = "";
 
-          // 🔼 Upload profile picture if available
           if (profilePicture) {
             const formData = new FormData();
             formData.append("file", profilePicture);
@@ -88,9 +87,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
             }
 
             const data = await res.json();
-            console.log("Cloudinary response:", data); // Check the response
             profileImageUrl = data.secure_url;
           }
+
           const userCredential = await createUserWithEmailAndPassword(
             auth,
             email,
@@ -104,6 +103,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
             password,
             profileImageUrl,
           });
+
           if (!result.success) {
             await userCredential.user.delete();
             setError(result.message);
@@ -124,10 +124,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
             return;
           }
 
-          await signIn({
-            email,
-            idToken,
-          });
+          await signIn({ email, idToken });
           router.push("/");
         }
       } catch (error: any) {
@@ -138,107 +135,104 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         } else {
           setError(error.message || "Something went wrong.");
         }
-      } finally {
       }
     }
   };
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-[100vh] w-full">
+    <div className="flex flex-col justify-center items-center min-h-screen px-4 md:px-8 w-full">
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       )}
       {type === "sign-up" && (
         <>
-          <h2 className="font-sora font-bold text-[40px] text-text-primary">
+          <h2 className="font-sora font-bold text-3xl sm:text-4xl md:text-[40px] text-text-primary text-center">
             PrepAI
           </h2>
-          <h4 className="font-redhat font-normal text-2xl pb-[32px]">
+          <h4 className="font-redhat font-normal text-lg sm:text-xl md:text-2xl pb-6 text-center">
             Prepare for interviews like a pro with PrepAI
           </h4>
         </>
       )}
 
-      {/* Error Message */}
-      {error && <p className="text-red-500">{error}</p>}
+      {error && <p className="text-red-500 mb-4">{error}</p>}
 
-      {/* Form */}
-      <div className="flex justify-center bg-[#1A1A1A] px-[50px] pb-[58px] pt-[56px] rounded-[28px] w-[614px] border">
+      <div className="w-full max-w-[614px] bg-[#1A1A1A] px-6 sm:px-10 py-10 rounded-[28px] border">
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-md space-y-[18px]"
+          className="w-full space-y-[18px]"
         >
-          <h2 className="text-center font-sora font-bold text-[32px] text-text-primary">
+          <h2 className="text-center font-sora font-bold text-2xl sm:text-3xl md:text-[32px] text-text-primary">
             {type === "sign-up"
               ? "Create your account"
               : "Welcome back to PrepAI"}
           </h2>
-          {type === "sign-up" ? (
+
+          {type === "sign-up" && (
             <TextInput
               value={name}
               icon={<User />}
               onChange={handleNameChange}
               placeholder="John Doe"
             />
-          ) : (
-            ""
           )}
+
           <EmailInput value={email} onChange={handleEmailChange} />
           <PasswordInput value={password} onChange={handlePasswordChange} />
+
           {type === "sign-up" && (
-            <>
-              <div className="space-y-2">
-                <input
-                  type="file"
-                  accept="image/png, image/jpeg"
-                  id="profile-picture"
-                  className="hidden"
-                  onChange={handleProfilePictureChange}
-                />
-                <button
+            <div className="space-y-2">
+              <input
+                type="file"
+                accept="image/png, image/jpeg"
+                id="profile-picture"
+                className="hidden"
+                onChange={handleProfilePictureChange}
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  document.getElementById("profile-picture")?.click()
+                }
+                className="w-full"
+              >
+                <Button
                   type="button"
-                  onClick={() => {
-                    document.getElementById("profile-picture")?.click();
-                  }}
-                  className="w-full"
-                >
-                  <Button
-                    type="button"
-                    text={
-                      profilePicture ? (
-                        <div className="flex gap-3 items-center font-redhat font-normal text-text-secondary text-[16px]">
-                          ✅<p>{profilePicture.name}</p>
-                        </div>
-                      ) : (
-                        <div className="flex gap-3 items-center font-redhat font-normal text-text-secondary text-[16px]">
-                          <Upload />
-                          <p>Upload your picture</p>
-                        </div>
-                      )
-                    }
-                    fill={false}
-                  />
-                </button>
-              </div>
-            </>
+                  text={
+                    profilePicture ? (
+                      <div className="flex gap-3 items-center font-redhat font-normal text-text-secondary text-sm sm:text-base">
+                        ✅<p>{profilePicture.name}</p>
+                      </div>
+                    ) : (
+                      <div className="flex gap-3 items-center font-redhat font-normal text-text-secondary text-sm sm:text-base">
+                        <Upload />
+                        <p>Upload your picture</p>
+                      </div>
+                    )
+                  }
+                  fill={false}
+                />
+              </button>
+            </div>
           )}
+
           <Button
             text={type === "sign-up" ? "Sign up" : "Log in"}
             fill={true}
             disabled={isButtonDisabled}
           />
 
-          <div className="flex w-full justify-center mt-[27px] font-redhat text-[#B3B3B3] font-medium md:font-normal text-body">
+          <div className="flex w-full justify-center mt-6 font-redhat text-[#B3B3B3] font-medium text-sm sm:text-base text-center">
             {type === "sign-up"
-              ? "Already have an account?   "
-              : "Don’t have an account?   "}
+              ? "Already have an account?"
+              : "Don’t have an account?"}
             <button
-              onClick={() => {
-                if (type === "sign-up") {
-                  router.push("/sign-in");
-                } else router.push("/sign-up");
-              }}
-              className="pl-2 text-[#B3B3B3] font-redhat font-bold cursor-pointer"
+              onClick={() =>
+                type === "sign-up"
+                  ? router.push("/sign-in")
+                  : router.push("/sign-up")
+              }
+              className="pl-2 text-[#B3B3B3] font-redhat font-bold"
             >
               {type === "sign-up" ? "Log In" : "Sign up"}
             </button>

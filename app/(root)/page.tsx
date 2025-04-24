@@ -12,62 +12,75 @@ import React, { useEffect, useState } from "react";
 
 const Homepage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [userInterviews, setUserInterviews] = useState<Interview[]>([]);
   const router = useRouter();
 
   useEffect(() => {
     const fetchData = async () => {
-        const currentUser = await getCurrentUser();
-        setUser(currentUser);
-        const interviews = await getInterviewsByUserId(currentUser?.id ?? "");
-        setUserInterviews(interviews ?? []);
-      }
+      const currentUser = await getCurrentUser();
+      setUser(currentUser);
+      const interviews = await getInterviewsByUserId(currentUser?.id ?? "");
+      setUserInterviews(interviews ?? []);
+    };
 
     fetchData();
-  }, []); 
-
-  // if (!user || userInterviews === null){
-  //   return <div>Loading...</div>; // Loading state until user data is fetched
-  // }
+  }, []);
 
   const hasPastInterviews = (userInterviews?.length ?? 0) > 0;
 
   const handleOptionClick = (type: "ai" | "manual") => {
-    if (type === "ai") {
-      router.push("/create-interview/ai");
-    } else {
-      router.push("/create-interview/manual");
-    }
+    router.push(`/create-interview/${type}`);
   };
+
+  const handleCreateInterviewClick = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsModalOpen(true);
+      setIsLoading(false);
+    }, 1000); // Simulate loading, or use real API logic
+  };
+
   return (
-    <div className="px-[100px]">
-      <div className="flex justify-between pl-[69px] pr-[80px] h-[299px] rounded-[16px] bg-[#1A1A1A]">
-        <div className="w-[515px] pt-[70px]">
-          {/* left div */}
-          <h2 className="font-sora text-[32px] font-bold text-[#ffffff]">
-            Get Interview-Ready with AI- Powered Practice & Feedback
+    <div className="px-4 sm:px-8 md:px-12 lg:px-20 xl:px-[100px] py-8">
+      {/* Hero Section */}
+      <div className="flex flex-col lg:flex-row justify-between items-center gap-8 p-6 sm:p-10 lg:px-12 lg:py-16 bg-[#1A1A1A] rounded-2xl">
+        <div className="flex-1 text-center lg:text-left">
+          <h2 className="font-sora text-2xl sm:text-3xl lg:text-[32px] font-bold text-white">
+            Get Interview-Ready with AI-Powered Practice & Feedback
           </h2>
-          <p className="font-redhat text-[#D6E0FF] text-[18px] pt-3 pb-[24px]">
+          <p className="font-redhat text-[#D6E0FF] text-base sm:text-lg mt-3 mb-6">
             Practice real interview questions & get instant feedback.
           </p>
-          <InterviewBtn
-            text="Create an Interview"
-            onClick={() => setIsModalOpen(true)}
-          />
+          <div className="flex justify-center lg:justify-start">
+            <InterviewBtn
+              text={isLoading ? "Loading..." : "Create an Interview"}
+              onClick={handleCreateInterviewClick}
+              loading={isLoading}
+            />
+          </div>
         </div>
 
-        <Image src={"/bot.png"} alt="robot" width={290} height={290} />
+        <div className="flex-shrink-0">
+          <Image
+            src="/bot.png"
+            alt="robot"
+            width={290}
+            height={290}
+            className="w-[200px] h-[200px] sm:w-[250px] sm:h-[250px] lg:w-[290px] lg:h-[290px]"
+          />
+        </div>
       </div>
 
-      {/* Interview Card */}
-      <h2 className="font-sora text-[32px] font-bold text-[#ffffff] pt-[102px] pb-[20px]">
+      {/* Your Interviews */}
+      <h2 className="font-sora text-2xl sm:text-3xl lg:text-[32px] font-bold text-white mt-20 mb-6">
         Your Interviews
       </h2>
 
       {hasPastInterviews ? (
-        <div className="grid grid-cols-3 gap-5">
-          {userInterviews?.map((interview) => (
+        <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {userInterviews.map((interview) => (
             <InterviewCard
               key={interview.id}
               id={interview.id}
@@ -81,28 +94,25 @@ const Homepage = () => {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col justify-center items-center h-[254px] rounded-[16px] bg-surface-card ">
-          <h4 className="pb-[41px] font-redhat font-normal text-[#D6E0FF] text-[24px]">
-            {" "}
-            Interviews you create will show up here.{" "}
+        <div className="flex flex-col items-center justify-center bg-surface-card h-[200px] sm:h-[254px] rounded-2xl text-center">
+          <h4 className="font-redhat text-[#D6E0FF] text-lg sm:text-xl mb-6">
+            Interviews you create will show up here.
           </h4>
           <InterviewBtn
-            text="Create an Interview"
-            onClick={() => setIsModalOpen(true)}
+            text={isLoading ? "Loading..." : "Create an Interview"}
+            onClick={handleCreateInterviewClick}
+            loading={isLoading}
           />
         </div>
       )}
 
-      <h2 className="font-sora text-[32px] font-bold text-[#ffffff] pt-[100px] pb-[44px]">
+      {/* Pick an Interview */}
+      <h2 className="font-sora text-2xl sm:text-3xl lg:text-[32px] font-bold text-white mt-20 mb-10">
         Pick An Interview
       </h2>
-      <div className="grid grid-cols-3 gap-5">
-        {/* <InterviewCard />
-        <InterviewCard />
-        <InterviewCard />
-        <InterviewCard />
-        <InterviewCard />
-        <InterviewCard /> */}
+
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        {/* You can populate this section as needed */}
       </div>
 
       {isModalOpen && (
