@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import InterviewBtn from "./InterviewBtn";
 import { useRouter } from "next/navigation";
 import { getLevelBg, getTypeBg } from "@/lib/utils";
@@ -14,6 +14,12 @@ const InterviewCard = ({
   level,
 }: InterviewCardProps) => {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleStartInterview = () => {
+    setIsLoading(true);
+    router.push(`/create-interview/${id}`);
+  };
 
   return (
     <div className="flex flex-col w-full bg-surface-card rounded-2xl overflow-hidden shadow-md transition-transform hover:scale-[1.02] duration-300">
@@ -31,13 +37,13 @@ const InterviewCard = ({
       {/* Content Section */}
       <div className="px-5 sm:px-6 md:px-8 pb-6 flex flex-col flex-grow">
         <div className="flex justify-start">
-          <Image
-            src="/brand.png"
-            alt="brand-logo"
-            width={80}
-            height={80}
-            className="w-14 h-14 sm:w-16 sm:h-16"
-          />
+          <div className="relative w-20 h-20 sm:w-16 sm:h-16">
+            <Image
+              src="/brand.png"
+              alt="brand-logo"
+              fill
+            />
+          </div>
         </div>
 
         <h2 className="py-4 font-sora font-semibold text-lg sm:text-xl md:text-2xl text-white leading-tight">
@@ -60,11 +66,12 @@ const InterviewCard = ({
           )}.`}
         </p>
 
-        {/* Spacer and Button */}
+        {/* Start Interview Button */}
         <div className="mt-auto">
           <InterviewBtn
             text="Start Interview"
-            onClick={() => router.push(`/create-interview/${id}`)}
+            loading={isLoading}
+            onClick={handleStartInterview}
           />
         </div>
       </div>

@@ -128,13 +128,14 @@ const Agent = ({
         ) : (
           <div className="flex flex-col md:flex-row justify-between gap-4">
             <div className="flex items-center gap-3 flex-wrap">
-              <Image
-                src={profileImageUrl}
-                alt="profile"
-                width={40}
-                height={40}
-                className="rounded-full object-cover hidden md:block"
-              />
+              <div className="relative h-10 w-10">
+                <Image
+                  src={profileImageUrl}
+                  alt="profile"
+                  fill
+                  className="rounded-full object-cover hidden md:block"
+                />
+              </div>
               <span>{interviewRole}</span>
               <h3 className="font-sora text-xl md:text-2xl font-bold text-white">
                 Interview
@@ -161,27 +162,29 @@ const Agent = ({
       <div className="flex flex-col md:flex-row gap-5 pb-8">
         {/* AI card - always shown */}
         <div className="flex justify-center items-center w-full h-[330px] bg-surface-card border border-[#303030] rounded-2xl relative">
-          <Image
-            src="/bot-head.png"
-            alt="bot-head"
-            width={150}
-            height={150}
-            className="rounded-full object-fit"
-          />
+          <div className="relative rounded-full w-[150px] h-[150px] overflow-hidden">
+            <Image
+              src="/bot-head.png"
+              alt="bot-head"
+              fill
+              className="object-cover"
+            />
+          </div>
           {isSpeaking && (
             <span className="absolute inline-flex w-24 h-24 animate-ping rounded-full bg-primary-200 opacity-75"></span>
           )}
         </div>
 
         {/* User profile card - hidden on mobile */}
-        <div className="hidden md:flex justify-center items-center w-full h-[330px] bg-surface-card border border-[#303030] rounded-2xl relative">
-          <Image
-            src={profileImageUrl}
-            alt="profile"
-            width={150}
-            height={150}
-            className="rounded-full object-cover"
-          />
+        <div className="hidden md:flex justify-center items-center w-full bg-surface-card border border-[#303030] rounded-2xl">
+          <div className="relative rounded-full w-[150px] h-[150px] overflow-hidden">
+            <Image
+              src={profileImageUrl}
+              alt="profile"
+              fill
+              className="object-cover"
+            />
+          </div>
         </div>
       </div>
 
@@ -200,12 +203,27 @@ const Agent = ({
       <div className="flex w-full justify-center pt-8">
         <button
           type="button"
-          onClick={callStatus !== "ACTIVE" ? handleCall : handleDisconnect}
-          className={`text-white font-medium text-lg px-8 py-4 rounded-full ${
-            callStatus !== "ACTIVE" ? "bg-green-500" : "bg-[#EB5757]"
+          disabled={callStatus === "CONNECTING"}
+          onClick={
+            callStatus === "ACTIVE"
+              ? handleDisconnect
+              : callStatus === "INACTIVE"
+              ? handleCall
+              : undefined
+          }
+          className={`text-white cursor-pointer font-medium text-lg px-8 py-4 rounded-full transition-colors duration-300 ${
+            callStatus === "ACTIVE"
+              ? "bg-[#EB5757]"
+              : callStatus === "CONNECTING"
+              ? "bg-gray-500 cursor-not-allowed"
+              : "bg-green-500"
           }`}
         >
-          {callStatus !== "ACTIVE" ? "Begin Interview" : "Leave Interview"}
+          {callStatus === "CONNECTING"
+            ? "Connecting..."
+            : callStatus === "ACTIVE"
+            ? "Leave Interview"
+            : "Begin Interview"}
         </button>
       </div>
     </div>

@@ -1,10 +1,16 @@
+'use client'
 import FeedbackCard from "@/components/FeedbackCard";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 const page = () => {
+  const router = useRouter();
   return (
     <div>
-      <h3 className="font-sora text-white font-bold text-[32px] pt-[72px] pl-[100px]">
+      <h3
+        className="font-sora cursor-pointer text-white font-bold text-[32px] pt-[72px] pl-[100px]"
+        onClick={() => router.push("/")}
+      >
         PrepAI
       </h3>
 

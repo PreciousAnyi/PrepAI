@@ -14,24 +14,25 @@ const RootLayout = async ({ children }: { children: ReactNode }) => {
   console.log("InterviewContext value:", userInterviews);
 
   return (
-        <div className="min-h-screen bg-background">
-          {/* Sticky Header */}
-          <div className="sticky top-0 z-50 bg-background flex items-center justify-between px-6 md:px-[100px] py-4 border-[#333]">
-            <h4 className="font-sora text-2xl md:text-[32px] font-bold text-white">
-              PrepAI
-            </h4>
-            <Image
-              src={user?.profileImageUrl ?? "/profile.png"}
-              alt="Profile picture"
-              width={60}
-              height={60}
-              className="rounded-full object-cover"
-            />
-          </div>
-
-          {/* Page content */}
-          <main className="py-6">{children}</main>
+    <div className="min-h-screen bg-background">
+      {/* Sticky Header */}
+      <div className="sticky top-0 z-50 bg-background flex items-center justify-between px-6 md:px-[100px] py-4 border-[#333]">
+        <h4 className="font-sora text-2xl md:text-[32px] font-bold text-white">
+          PrepAI
+        </h4>
+        <div className="relative w-[60px] h-[60px]">
+          <Image
+            src={user?.profileImageUrl ?? "/profile.png"}
+            alt="Profile picture"
+            fill
+            className="rounded-full object-cover"
+          />
         </div>
+      </div>
+
+      {/* Page content */}
+      <main className="py-6">{children}</main>
+    </div>
   );
 };
 
