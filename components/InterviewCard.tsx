@@ -5,6 +5,7 @@ import InterviewBtn from "./InterviewBtn";
 import { useRouter } from "next/navigation";
 import { getLevelBg, getTypeBg } from "@/lib/utils";
 
+
 const InterviewCard = ({
   userId,
   id,
@@ -12,6 +13,7 @@ const InterviewCard = ({
   type,
   techstack,
   level,
+  brandLogoUrl, 
 }: InterviewCardProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -38,8 +40,9 @@ const InterviewCard = ({
       <div className="px-5 sm:px-6 md:px-8 pb-6 flex flex-col flex-grow">
         <div className="flex justify-start">
           <div className="relative w-20 h-20 sm:w-16 sm:h-16">
+
             <Image
-              src="/brand.png"
+              src={brandLogoUrl || "/bot.png"} 
               alt="brand-logo"
               fill
             />

@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Upload } from "react-feather";
-import { getCurrentUser } from "@/lib/actions/auth.action"; // Import the getCurrentUser function
+import { getCurrentUser } from "@/lib/actions/auth.action";
 
 interface ManualInterviewModalProps {
   onClose: () => void;
@@ -20,7 +20,7 @@ interface ManualInterviewModalProps {
     role: string;
     type: string;
     level: string;
-    brandLogo: File | null;
+    brandLogo: string | null;
     techStack: string;
     amount: string;
     userId: string | null;
@@ -33,66 +33,86 @@ const ManualInterviewModal: React.FC<ManualInterviewModalProps> = ({
 }) => {
   const [role, setRole] = useState("");
   const [techStack, setTechStack] = useState("");
-  const [amount, setAmount] = useState(""); // Renamed from questionsCount to amount
-  const [type, setType] = useState("");
-  const [level, setLevel] = useState("");
+  const [amount, setAmount] = useState(""); 
+  const [type, setType] = useState("Technical");
+  const [level, setLevel] = useState("Junior");
   const [brandLogo, setBrandLogo] = useState<File | null>(null);
-  const [userId, setUserId] = useState<string | null>(null); // State to store userId
+  const [userId, setUserId] = useState<string | null>(null); 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    // Fetch the current user and set userId
     const fetchUser = async () => {
       const user = await getCurrentUser();
-      setUserId(user?.id ?? null); // Set userId, or null if no user
+      setUserId(user?.id ?? null); 
     };
-
     fetchUser();
-  }, []); // Empty dependency array means this runs once when the component mounts
+  }, []); 
 
   const handleSubmit = async () => {
-    setIsSubmitting(true); // Set submitting state to true
+    setIsSubmitting(true);
     try {
+      // Upload brandLogo to Cloudinary if it exists
+      let brandLogoUrl = null;
+      if (brandLogo) {
+        const formData = new FormData();
+        formData.append("file", brandLogo);
+        formData.append("upload_preset", "your_upload_preset"); // Replace with your Cloudinary upload preset
+
+        // Call Cloudinary API
+        const cloudinaryResponse = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
+          method: "POST",
+          body: formData,
+        });
+
+        const cloudinaryData = await cloudinaryResponse.json();
+        if (cloudinaryData.secure_url) {
+          brandLogoUrl = cloudinaryData.secure_url;
+        } else {
+          throw new Error("Cloudinary upload failed");
+        }
+      }
+
+      // Send the form data along with the Cloudinary URL to your API
       const response = await fetch('https://prep-ai-nine.vercel.app/api/vapi/generate', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          type: type,      // 'behavioral' or 'technical'
-          role: role,      // Job role (e.g., 'Frontend Developer')
-          level: level,    
-          techstack: techStack,     
-          amount: amount,  
-          userid: userId,  
+          type,
+          role,
+          level,
+          techstack: techStack,
+          amount,
+          userid: userId,
+          brandLogo: brandLogoUrl, // Send the Cloudinary URL
         }),
-
       });
-  
+
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
-  
+
       const data = await response.json();
-  
+
       if (data.success) {
         console.log('Interview created successfully');
         onSubmit({
           role,
           type,
           level,
-          brandLogo,
+          brandLogo: brandLogoUrl, // Send the Cloudinary URL
           techStack,
           amount,
           userId,
-        }); // Call the onSubmit prop to pass data back
+        });
       } else {
         console.error('Failed to create interview', data.error);
       }
     } catch (error) {
       console.error('Error submitting interview:', error);
     } finally {
-      setIsSubmitting(false); // Set submitting state to false after the request completes
+      setIsSubmitting(false);
     }
   };
 
@@ -112,16 +132,9 @@ const ManualInterviewModal: React.FC<ManualInterviewModalProps> = ({
   return (
     <div
       onClick={handleBackdropClick}
-      className="fixed inset-0 z-50 bg-black bg-opacity-50 md:bg-transparent flex justify-center items-center px-4"
+      className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center px-4"
     >
-      <div className="w-full max-w-xl p-6 sm:p-10 rounded-[28px] bg-[#1A1A1A] border border-[#303030] space-y-6 relative">
-        <button
-          className="absolute top-4 right-4 text-white"
-          onClick={onClose}
-        >
-          ✖
-        </button>
-
+      <div className="w-full max-w-xl p-6 sm:p-10 rounded-[28px] bg-[#1A1A1A] border border-[#303030] space-y-2 relative max-h-[90vh]">
         <div className="text-center space-y-2">
           <h3 className="font-sora text-2xl font-bold text-white">
             Create an Interview
@@ -150,7 +163,7 @@ const ManualInterviewModal: React.FC<ManualInterviewModalProps> = ({
             label="How many questions?"
             type="number"
             placeholder="e.g. 5"
-            value={amount} // Changed from questionsCount to amount
+            value={amount}
             onChange={(value) => setAmount(value)} 
           />
         </div>

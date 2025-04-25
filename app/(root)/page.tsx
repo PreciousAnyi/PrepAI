@@ -94,6 +94,7 @@ const Homepage = () => {
               level={interview.level}
               role={interview.role}
               type={interview.type}
+              brandLogoUrl={interview.coverImage}
               techstack={interview.techstack}
               createdAt={interview.createdAt}
             />

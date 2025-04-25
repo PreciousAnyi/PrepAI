@@ -22,6 +22,7 @@ interface Interview {
   createdAt: string;
   userId: string;
   type: string;
+  coverImage?: string;
   finalized: boolean;
 }
 
@@ -47,6 +48,7 @@ interface InterviewCardProps {
   techstack: string[];
   createdAt?: string;
   level?: string;
+  brandLogoUrl?: string | null;
 }
 
 interface AgentProps {
