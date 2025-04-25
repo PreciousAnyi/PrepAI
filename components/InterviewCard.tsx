@@ -39,7 +39,7 @@ const InterviewCard = ({
       {/* Content Section */}
       <div className="px-5 sm:px-6 md:px-8 pb-6 flex flex-col flex-grow">
         <div className="flex justify-start">
-          <div className="relative w-20 h-20 sm:w-16 sm:h-16">
+          <div className="relative rounded-full overflow-hidden w-20 h-20 sm:w-16 sm:h-16">
 
             <Image
               src={brandLogoUrl || "/bot.png"} 

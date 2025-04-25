@@ -19,15 +19,16 @@ const Homepage = () => {
   const [userInterviews, setUserInterviews] = useState<Interview[]>([]);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const currentUser = await getCurrentUser();
-      setUser(currentUser);
-      const interviews = await getInterviewsByUserId(currentUser?.id ?? "");
-      setUserInterviews(interviews ?? []);
-    };
+  // Fetch user data and interviews
+  const fetchData = async () => {
+    const currentUser = await getCurrentUser();
+    setUser(currentUser);
+    const interviews = await getInterviewsByUserId(currentUser?.id ?? "");
+    setUserInterviews(interviews ?? []);
+  };
 
-    fetchData();
+  useEffect(() => {
+    fetchData(); // Fetch on initial render
   }, []);
 
   const hasPastInterviews = (userInterviews?.length ?? 0) > 0;
@@ -45,7 +46,7 @@ const Homepage = () => {
     setTimeout(() => {
       setIsModalOpen(true);
       setIsLoading(false);
-    }, 1000); 
+    }, 1000);
   };
 
   return (
@@ -133,18 +134,20 @@ const Homepage = () => {
 
       {isModalOpen && modalType === "manual" && (
         <div className="fixed inset-0 bg-transparent flex justify-center items-center z-50">
-        <ManualInterviewModal
-          onClose={() => {
-            setModalType("initial");
-            setIsModalOpen(false);
-          }}
-          onSubmit={(data) => {
-            console.log("Manual interview data:", data);
-            // You can send this to an API, then close modal
-            setIsModalOpen(false);
-            setModalType("initial");
-          }}
-        />
+          <ManualInterviewModal
+            onClose={() => {
+              setModalType("initial");
+              setIsModalOpen(false);
+            }}
+            onSubmit={async (data) => {
+              // Add the new interview data
+              console.log("Manual interview data:", data);
+              // Here, you might want to send the data to the backend
+              await fetchData(); // Refetch the interviews
+              setIsModalOpen(false);
+              setModalType("initial");
+            }}
+          />
         </div>
       )}
     </div>

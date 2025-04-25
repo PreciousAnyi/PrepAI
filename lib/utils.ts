@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 export const getLevelBg = (level: string) => {
   switch (level.toLowerCase()) {
     case "junior":
-      return "bg-[#3a3a3a]";
+      return "bg-[#3E8D2E6E]";
     case "mid-level":
       return "bg-[#8D892E6E]";
     case "senior":

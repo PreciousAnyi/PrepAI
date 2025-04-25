@@ -184,8 +184,8 @@ const ManualInterviewModal: React.FC<ManualInterviewModalProps> = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="technical">Technical</SelectItem>
-                  <SelectItem value="non-technical">Non-Technical</SelectItem>
+                  <SelectItem value="Technical">Technical</SelectItem>
+                  <SelectItem value="Non-technical">Non-Technical</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -201,9 +201,9 @@ const ManualInterviewModal: React.FC<ManualInterviewModalProps> = ({
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectItem value="junior">Junior</SelectItem>
-                  <SelectItem value="mid-level">Mid-level</SelectItem>
-                  <SelectItem value="senior">Senior</SelectItem>
+                  <SelectItem value="Junior">Junior</SelectItem>
+                  <SelectItem value="Mid-level">Mid-level</SelectItem>
+                  <SelectItem value="Senior">Senior</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
