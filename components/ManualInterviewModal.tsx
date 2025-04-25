@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import TextInput from "@/components/TextInput";
 import Button from "@/components/Button";
 import {
@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Upload } from "react-feather";
+import { getCurrentUser } from "@/lib/actions/auth.action"; // Import the getCurrentUser function
 
 interface ManualInterviewModalProps {
   onClose: () => void;
@@ -20,6 +21,9 @@ interface ManualInterviewModalProps {
     type: string;
     level: string;
     brandLogo: File | null;
+    techStack: string;
+    amount: string;
+    userId: string | null;
   }) => void;
 }
 
@@ -28,12 +32,68 @@ const ManualInterviewModal: React.FC<ManualInterviewModalProps> = ({
   onSubmit,
 }) => {
   const [role, setRole] = useState("");
+  const [techStack, setTechStack] = useState("");
+  const [amount, setAmount] = useState(""); // Renamed from questionsCount to amount
   const [type, setType] = useState("");
   const [level, setLevel] = useState("");
   const [brandLogo, setBrandLogo] = useState<File | null>(null);
+  const [userId, setUserId] = useState<string | null>(null); // State to store userId
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = () => {
-    onSubmit({ role, type, level, brandLogo });
+  useEffect(() => {
+    // Fetch the current user and set userId
+    const fetchUser = async () => {
+      const user = await getCurrentUser();
+      setUserId(user?.id ?? null); // Set userId, or null if no user
+    };
+
+    fetchUser();
+  }, []); // Empty dependency array means this runs once when the component mounts
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true); // Set submitting state to true
+    try {
+      const response = await fetch('https://prep-ai-nine.vercel.app/api/vapi/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: type,      // 'behavioral' or 'technical'
+          role: role,      // Job role (e.g., 'Frontend Developer')
+          level: level,    
+          techstack: techStack,     
+          amount: amount,  
+          userid: userId,  
+        }),
+
+      });
+  
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+  
+      const data = await response.json();
+  
+      if (data.success) {
+        console.log('Interview created successfully');
+        onSubmit({
+          role,
+          type,
+          level,
+          brandLogo,
+          techStack,
+          amount,
+          userId,
+        }); // Call the onSubmit prop to pass data back
+      } else {
+        console.error('Failed to create interview', data.error);
+      }
+    } catch (error) {
+      console.error('Error submitting interview:', error);
+    } finally {
+      setIsSubmitting(false); // Set submitting state to false after the request completes
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,10 +133,27 @@ const ManualInterviewModal: React.FC<ManualInterviewModalProps> = ({
 
         <TextInput
           label="What role are you interested in?"
-          placeholder="e.g. Quality Assurance"
+          placeholder="e.g. Frontend Development"
           value={role}
           onChange={(value) => setRole(value)}
         />
+
+        <div className="flex flex-col sm:flex-row gap-4">
+          <TextInput
+            label="Enter your tech stack"
+            placeholder="e.g. React, Javascript"
+            value={techStack}
+            onChange={(value) => setTechStack(value)}
+          />
+
+          <TextInput
+            label="How many questions?"
+            type="number"
+            placeholder="e.g. 5"
+            value={amount} // Changed from questionsCount to amount
+            onChange={(value) => setAmount(value)} 
+          />
+        </div>
 
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="w-full">
@@ -144,10 +221,11 @@ const ManualInterviewModal: React.FC<ManualInterviewModalProps> = ({
         </div>
 
         <Button
-          text="Create Interview"
+          text={isSubmitting ? "Creating..." : "Create Interview"}
           height="60px"
           fill={true}
           onClick={handleSubmit}
+          disabled={isSubmitting}
         />
       </div>
     </div>
