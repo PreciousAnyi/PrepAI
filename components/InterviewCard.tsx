@@ -49,7 +49,7 @@ const InterviewCard = ({
           </div>
         </div>
 
-        <h2 className="py-4 font-sora font-semibold text-lg sm:text-xl md:text-2xl text-white leading-tight">
+        <h2 className="line-clamp-2 py-4 font-sora font-semibold text-lg sm:text-xl md:text-2xl text-white leading-tight">
           {role}
         </h2>
 
