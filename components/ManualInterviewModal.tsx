@@ -56,15 +56,20 @@ const ManualInterviewModal: React.FC<ManualInterviewModalProps> = ({
       if (brandLogo) {
         const formData = new FormData();
         formData.append("file", brandLogo);
-        formData.append("upload_preset", "your_upload_preset"); // Replace with your Cloudinary upload preset
+        formData.append(
+          "upload_preset",
+          process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!
+        );
 
-        // Call Cloudinary API
-        const cloudinaryResponse = await fetch("https://api.cloudinary.com/v1_1/your_cloud_name/image/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const res = await fetch(
+          `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
 
-        const cloudinaryData = await cloudinaryResponse.json();
+        const cloudinaryData = await res.json();
         if (cloudinaryData.secure_url) {
           brandLogoUrl = cloudinaryData.secure_url;
         } else {
