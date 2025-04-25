@@ -42,14 +42,18 @@ const ManualInterviewModal: React.FC<ManualInterviewModalProps> = ({
       setBrandLogo(file);
     }
   };
+
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-      if (e.target === e.currentTarget) {
-        onClose();
-      }
-    };
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
 
   return (
-    <div onClick={handleBackdropClick} className="fixed inset-0 z-50 bg-black bg-opacity-50 md:bg-transparent flex justify-center items-center px-4">
+    <div
+      onClick={handleBackdropClick}
+      className="fixed inset-0 z-50 bg-black bg-opacity-50 md:bg-transparent flex justify-center items-center px-4"
+    >
       <div className="w-full max-w-xl p-6 sm:p-10 rounded-[28px] bg-[#1A1A1A] border border-[#303030] space-y-6 relative">
         <button
           className="absolute top-4 right-4 text-white"
@@ -57,6 +61,7 @@ const ManualInterviewModal: React.FC<ManualInterviewModalProps> = ({
         >
           ✖
         </button>
+
         <div className="text-center space-y-2">
           <h3 className="font-sora text-2xl font-bold text-white">
             Create an Interview
@@ -118,29 +123,24 @@ const ManualInterviewModal: React.FC<ManualInterviewModalProps> = ({
             className="hidden"
             onChange={handleFileChange}
           />
-          <button
+          <Button
             type="button"
+            height="60px"
+            fill={false}
             onClick={() => document.getElementById("brand-logo")?.click()}
-            className="w-full"
-          >
-            <Button
-              type="button"
-              height="60px"
-              fill={false}
-              text={
-                brandLogo ? (
-                  <div className="flex gap-3 items-center font-redhat text-text-secondary text-sm sm:text-base">
-                    ✅ <p>{brandLogo.name}</p>
-                  </div>
-                ) : (
-                  <div className="flex gap-3 items-center font-redhat text-text-secondary text-sm sm:text-base">
-                    <Upload />
-                    <p>Upload brand logo</p>
-                  </div>
-                )
-              }
-            />
-          </button>
+            text={
+              brandLogo ? (
+                <div className="flex gap-3 items-center font-redhat text-text-secondary text-sm sm:text-base">
+                  ✅ <p>{brandLogo.name}</p>
+                </div>
+              ) : (
+                <div className="flex gap-3 items-center font-redhat text-text-secondary text-sm sm:text-base">
+                  <Upload />
+                  <p>Upload brand logo</p>
+                </div>
+              )
+            }
+          />
         </div>
 
         <Button

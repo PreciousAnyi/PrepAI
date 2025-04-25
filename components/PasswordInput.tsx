@@ -28,21 +28,28 @@ const PasswordInput: React.FC<PasswordInputProps> = ({
       <label
         htmlFor="passwordinput"
         className="text-body text-base font-medium font-redhat block mb-2"
-      >Password</label>
-      <div className="group-focus-within:border-borders-action flex items-center rounded-xl h-[48px] md:h-[60px] border border-borders-disabled hover:border-borders-main-hifi">
-        <div className="pl-[20px] text-text-disabled group-focus-within:text-active">
-          <Lock />
+      >
+        Password
+      </label>
+      <div className="group-focus-within:border-borders-action flex items-center rounded-xl h-[48px] md:h-[60px] border border-borders-disabled hover:border-borders-main-hifi px-4 overflow-hidden">
+        {/* Lock Icon */}
+        <div className="text-text-disabled group-focus-within:text-active mr-2 flex-shrink-0">
+          <Lock size={20} />
         </div>
+
+        {/* Input Field */}
         <input
           type={passwordVisible ? "text" : "password"}
           id="passwordinput"
           placeholder={placeholder}
           value={value}
           onChange={handleChange}
-          className="focus:outline-none flex-1 px-3 py-2 border-none" // Input styles
+          className="focus:outline-none flex-grow min-w-0 text-sm bg-transparent"
         />
+
+        {/* Eye Icon */}
         <div
-          className="pr-5 cursor-pointer text-text-disabled group-focus-within:text-active" // Eye icon container
+          className="ml-2 cursor-pointer text-text-disabled group-focus-within:text-active flex-shrink-0"
           onClick={togglePasswordVisibility}
         >
           {passwordVisible ? <EyeOff size={20} /> : <Eye size={20} />}

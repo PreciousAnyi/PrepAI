@@ -189,8 +189,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                 className="hidden"
                 onChange={handleProfilePictureChange}
               />
-              <button
-                type="button"
+              <div
                 onClick={() =>
                   document.getElementById("profile-picture")?.click()
                 }
@@ -212,7 +211,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                   }
                   fill={false}
                 />
-              </button>
+              </div>
             </div>
           )}
 
@@ -232,6 +231,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
                   ? router.push("/sign-in")
                   : router.push("/sign-up")
               }
+              type="button"
               className="pl-2 text-[#B3B3B3] font-redhat font-bold"
             >
               {type === "sign-up" ? "Log In" : "Sign up"}
