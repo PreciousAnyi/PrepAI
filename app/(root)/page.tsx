@@ -4,6 +4,7 @@
 import CreateInterviewModal from "@/components/CreateInterviewModal";
 import InterviewBtn from "@/components/InterviewBtn";
 import InterviewCard from "@/components/InterviewCard";
+import ManualInterviewModal from "@/components/ManualInterviewModal";
 import { getCurrentUser } from "@/lib/actions/auth.action";
 import { getInterviewsByUserId } from "@/lib/actions/general.action";
 import Image from "next/image";
@@ -12,6 +13,7 @@ import React, { useEffect, useState } from "react";
 
 const Homepage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<"initial" | "manual">("initial");
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
   const [userInterviews, setUserInterviews] = useState<Interview[]>([]);
@@ -31,7 +33,11 @@ const Homepage = () => {
   const hasPastInterviews = (userInterviews?.length ?? 0) > 0;
 
   const handleOptionClick = (type: "ai" | "manual") => {
-    router.push(`/create-interview/${type}`);
+    if (type === "manual") {
+      setModalType("manual");
+    } else {
+      router.push(`/create-interview/ai`);
+    }
   };
 
   const handleCreateInterviewClick = () => {
@@ -39,7 +45,7 @@ const Homepage = () => {
     setTimeout(() => {
       setIsModalOpen(true);
       setIsLoading(false);
-    }, 1000); // Simulate loading, or use real API logic
+    }, 1000); 
   };
 
   return (
@@ -115,12 +121,29 @@ const Homepage = () => {
         {/* You can populate this section as needed */}
       </div>
 
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      {isModalOpen && modalType === "initial" && (
+        <div className="fixed inset-0 bg-transparent flex justify-center items-center z-50">
           <CreateInterviewModal
             onClose={() => setIsModalOpen(false)}
             onOptionSelect={handleOptionClick}
           />
+        </div>
+      )}
+
+      {isModalOpen && modalType === "manual" && (
+        <div className="fixed inset-0 bg-transparent flex justify-center items-center z-50">
+        <ManualInterviewModal
+          onClose={() => {
+            setModalType("initial");
+            setIsModalOpen(false);
+          }}
+          onSubmit={(data) => {
+            console.log("Manual interview data:", data);
+            // You can send this to an API, then close modal
+            setIsModalOpen(false);
+            setModalType("initial");
+          }}
+        />
         </div>
       )}
     </div>

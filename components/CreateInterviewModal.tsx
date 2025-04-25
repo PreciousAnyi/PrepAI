@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 interface CreateInterviewModalProps {
   onClose: () => void;
@@ -9,52 +9,36 @@ const CreateInterviewModal: React.FC<CreateInterviewModalProps> = ({
   onClose,
   onOptionSelect,
 }) => {
-  const [selected, setSelected] = useState<"ai" | "manual" | null>(null);
-
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
 
-  const handleClick = (type: "ai" | "manual") => {
-    if (!selected) {
-      setSelected(type);
-      onOptionSelect(type);
-    }
-  };
-
   return (
     <div
       onClick={handleBackdropClick}
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center px-4 sm:px-6"
+      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 px-4"
     >
-      <div className="w-full max-w-[1031px] bg-surface-card rounded-[20px] p-6 sm:p-10 flex flex-col items-center text-center relative">
-        <h2 className="font-sora text-2xl sm:text-3xl md:text-[32px] font-semibold pt-4 sm:pt-10 leading-snug">
+      <div className="flex flex-col items-center w-full max-w-[95%] sm:max-w-[600px] md:max-w-[700px] lg:max-w-[850px] xl:max-w-[1031px] bg-surface-card rounded-2xl relative py-10 px-6 sm:px-10">
+        <h2 className="font-sora text-xl sm:text-2xl lg:text-[32px] font-semibold text-center">
           How would you like to create your interview?
         </h2>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 pt-8 sm:pt-14 w-full">
+        {/* Button container: stack on mobile, row on medium screens */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-10 sm:pt-14">
           <button
-            onClick={() => handleClick("ai")}
-            disabled={!!selected}
-            className={`flex justify-center items-center w-full max-w-[294px] h-[250px] sm:h-[330px] text-lg sm:text-2xl md:text-[28px] bg-[#4A154B] rounded-[14px] font-redhat font-medium text-white transition-opacity cursor-pointer ${
-              selected ? "opacity-50" : ""
-            }`}
+            onClick={() => onOptionSelect("ai")}
+            className="min-w-[250px] w-[90%] md:min-w-[325px] sm:w-[250px] h-[250px] sm:h-[300px] lg:h-[330px] bg-[#4A154B] text-white rounded-xl font-redhat font-medium text-lg sm:text-xl lg:text-[28px] flex items-center justify-center"
           >
             AI-prompted
           </button>
 
-          <div className="hidden sm:block font-redhat text-xl md:text-[28px]">
-            Or
-          </div>
+          <span className="text-white text-lg font-redhat">OR</span>
 
           <button
-            onClick={() => handleClick("manual")}
-            disabled={!!selected}
-            className={`flex justify-center items-center w-full max-w-[294px] h-[250px] sm:h-[330px] text-lg sm:text-2xl md:text-[28px] bg-[#4A154B] rounded-[14px] font-redhat font-medium text-white transition-opacity cursor-pointer ${
-              selected ? "opacity-50" : ""
-            }`}
+            onClick={() => onOptionSelect("manual")}
+            className="min-w-[250px] w-[90%] md:min-w-[325px] sm:w-[250px] h-[250px] sm:h-[300px] lg:h-[330px] bg-[#4A154B] text-white rounded-xl font-redhat font-medium text-lg sm:text-xl lg:text-[28px] flex items-center justify-center"
           >
             Manually
           </button>
