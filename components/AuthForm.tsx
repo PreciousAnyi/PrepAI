@@ -170,6 +170,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
 
           {type === "sign-up" && (
             <TextInput
+            label="Name"
               value={name}
               icon={<User />}
               onChange={handleNameChange}
