@@ -27,6 +27,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   const [error, setError] = useState<string | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [profilePicture, setProfilePicture] = useState<File | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   React.useEffect(() => {
     const success = searchParams.get("success");
@@ -59,6 +60,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!isButtonDisabled) {
+      setIsLoading(true);
       try {
         if (type === "sign-up") {
           let profileImageUrl = "";
@@ -135,7 +137,9 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
         } else {
           setError(error.message || "Something went wrong.");
         }
-      }
+      } finally {
+      setIsLoading(false);
+    }
     }
   };
 
@@ -219,6 +223,7 @@ const AuthForm: React.FC<AuthFormProps> = ({ type }) => {
           <Button
             text={type === "sign-up" ? "Sign up" : "Log in"}
             fill={true}
+            loading={isLoading}
             disabled={isButtonDisabled}
           />
 

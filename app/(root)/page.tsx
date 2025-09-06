@@ -6,7 +6,7 @@ import InterviewBtn from "@/components/InterviewBtn";
 import InterviewCard from "@/components/InterviewCard";
 import ManualInterviewModal from "@/components/ManualInterviewModal";
 import { getCurrentUser } from "@/lib/actions/auth.action";
-import { getInterviewsByUserId } from "@/lib/actions/general.action";
+import { getFeedbackByInterviewId, getInterviewsByUserId } from "@/lib/actions/general.action";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -16,16 +16,40 @@ const Homepage = () => {
   const [modalType, setModalType] = useState<"initial" | "manual">("initial");
   const [isLoading, setIsLoading] = useState(false);
   const [user, setUser] = useState<any>(null);
-  const [userInterviews, setUserInterviews] = useState<Interview[]>([]);
+  const [userInterviews, setUserInterviews] = useState<
+  Array<Interview & { hasFeedback: boolean }>
+>([]);
+
   const router = useRouter();
 
   // Fetch user data and interviews
   const fetchData = async () => {
-    const currentUser = await getCurrentUser();
-    setUser(currentUser);
-    const interviews = await getInterviewsByUserId(currentUser?.id ?? "");
-    setUserInterviews(interviews ?? []);
-  };
+  const currentUser = await getCurrentUser();
+  if (!currentUser || !currentUser.id) return; // Exit early if no user
+  setUser(currentUser);
+
+  const interviews = await getInterviewsByUserId(currentUser.id);
+  if (!interviews || interviews.length === 0) return;
+
+  const interviewsWithFeedback = await Promise.all(
+    interviews.map(async (interview) => {
+      // Ensure interview.id exists
+      const feedback = await getFeedbackByInterviewId({
+        interviewId: interview.id!, // use ! to assert it's defined
+        userId: currentUser.id,
+      });
+
+      return {
+        ...interview,
+        hasFeedback: !!feedback,
+      };
+    })
+  );
+
+  setUserInterviews(interviewsWithFeedback);
+};
+
+
 
   useEffect(() => {
     fetchData(); // Fetch on initial render
@@ -98,6 +122,7 @@ const Homepage = () => {
               brandLogoUrl={interview.coverImage}
               techstack={interview.techstack}
               createdAt={interview.createdAt}
+              hasFeedback={interview.hasFeedback} 
             />
           ))}
         </div>
@@ -114,10 +139,6 @@ const Homepage = () => {
         </div>
       )}
 
-      {/* Pick an Interview */}
-      <h2 className="font-sora text-2xl sm:text-3xl lg:text-[32px] font-bold text-white mt-20 mb-10">
-        Pick An Interview
-      </h2>
 
       <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         {/* You can populate this section as needed */}

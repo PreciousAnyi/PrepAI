@@ -14,14 +14,21 @@ const InterviewCard = ({
   techstack,
   level,
   brandLogoUrl, 
+  hasFeedback
 }: InterviewCardProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingFeedback, setIsLoadingFeedback] = useState(false);
 
   const handleStartInterview = () => {
     setIsLoading(true);
     router.push(`/create-interview/${id}`);
   };
+
+  const handleViewFeedback = () => {
+  setIsLoadingFeedback(true)
+  router.push(`/create-interview/${id}/feedback`);
+};
 
   return (
     <div className="flex flex-col w-full bg-surface-card rounded-2xl overflow-hidden shadow-md transition-transform hover:scale-[1.02] duration-300">
@@ -71,12 +78,29 @@ const InterviewCard = ({
 
         {/* Start Interview Button */}
         <div className="mt-auto">
-          <InterviewBtn
-            text="Start Interview"
-            loading={isLoading}
-            onClick={handleStartInterview}
-          />
-        </div>
+  {hasFeedback ? (
+    <div className="flex  gap-2">
+    <InterviewBtn
+      text="View Feedback"
+      loading={isLoadingFeedback}
+      onClick={handleViewFeedback}
+    />
+    
+    <InterviewBtn
+      text="Retake Interview"
+      loading={isLoading}
+      onClick={handleStartInterview}
+    />
+    </div>
+  ) : (
+    <InterviewBtn
+      text="Start Interview"
+      loading={isLoading}
+      onClick={handleStartInterview}
+    />
+  )}
+</div>
+
       </div>
     </div>
   );

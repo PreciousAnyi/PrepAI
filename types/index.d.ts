@@ -49,6 +49,7 @@ interface InterviewCardProps {
   createdAt?: string;
   level?: string;
   brandLogoUrl?: string | null;
+  hasFeedback: boolean;
 }
 
 interface AgentProps {

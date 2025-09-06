@@ -27,7 +27,7 @@ const Button: React.FC<ButtonProps> = ({
     type={type}
       className={`${
         fill
-          ? "bg-[#808080] text-text-secondary"
+          ? "bg-[#4A154B] text-text-secondary"
           : "border bg-[#222222] text-surface-action"
       } 
       font-redhat cursor-pointer font-medium rounded-xl flex items-center justify-center 
